@@ -1,0 +1,8 @@
+{
+  "NAME": {
+    "Icon": "/*quadratic image*/",
+    "Text": "/*text to display*/",
+    "Cmd": "/*command to execute*/"
+  },
+  …
+}

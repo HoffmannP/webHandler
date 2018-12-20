@@ -4,16 +4,10 @@
 	<title>WebHandler</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<link rel="stylesheet" href="style.css">
-	<style>
-		button.unlock > span { background-image: url("unlock.png"); }
-		button.shutdown > span { background-image: url("shutdown.png"); }
-		button.minecraft > span { background-image: url("minecraft.png"); }
-	</style>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="script.js"></script>
 </head>
-<body>
-	{{range btn}}
-	<button class=".c"><span>{{.t}}</span></button>
-	{{end}}
+<body>{{range $name, $button := .}}
+	<button data-name="{{$name}}"><span style="background-image: url('{{$button.Icon}}')">{{$button.Text}}</span></button>{{end}}
 </body>
 </html>
