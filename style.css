@@ -1,0 +1,62 @@
+@font-face {
+  font-family: "MS Reference Sans Serif";
+  font-style: normal;
+  font-weight: normal;
+  src: url("MSReferenceSansSerif.woff2") format("woff2"),
+       url("MSReferenceSansSerif.woff") format("woff"),
+       url("MSReferenceSansSerif.ttf") format("truetype");
+}
+
+body {
+  --win-grey: #CCC;
+  --win-light: #FBFBFB;
+  --win-dark: #242424;
+  --base-width: 2px;
+  --border-shadow: var(--base-width) solid var(--win-dark);
+  --border-light: var(--base-width) solid var(--win-light);
+  align-content: space-evenly;
+  align-items: center;
+  background-color: var(--win-grey);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: "MS Sans Serif", "Microsoft MS Sans Serif", "MS Reference Sans Serif", sans-serif;
+  justify-content: space-evenly;
+}
+
+button {
+  flex-grow: 1;
+  flex-basis: 10em;
+  border-left: var(--border-light);
+  border-top: var(--border-light);
+  border-right: var(--border-shadow);
+  border-bottom: var(--border-shadow);
+  box-shadow: 1px 1px var(--base-width) var(--win-dark);
+  background-color: var(--win-grey);
+  width: 33em;
+  height: 25em;
+  margin: 2em;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:active {
+  border-right: var(--border-light);
+  border-bottom: var(--border-light);
+  border-left: var(--border-shadow);
+  border-top: var(--border-shadow);
+  box-shadow: -1px -1px var(--base-width) var(--win-dark);
+}
+
+button>span {
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-size: 64px 64px;
+  display: inline-block;
+  height: 64px;
+  padding: 16px;
+  padding-left: 72px;
+  white-space: nowrap;
+  font-size: 32px;
+}
