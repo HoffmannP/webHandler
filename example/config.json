@@ -9,6 +9,11 @@
     "Text": "Minecraft",
     "Cmd": "DISPLAY=:0 xeyes"
   },
+  "shaun": {
+    "Icon": "icons/shaun.png",
+    "Text": "Shaun Shaun",
+    "Cmd": "DISPLAY=:0 vlc --fullscreen --random \"Videos/Kinder/Shaun/*\""
+  },
   "shutdown": {
     "Icon": "icons/shutdown.png",
     "Text": "Herunterfahren",
