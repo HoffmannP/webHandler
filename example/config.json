@@ -1,0 +1,17 @@
+{
+  "unlock": {
+    "Icon": "unlock.png",
+    "Text": "Rechner entsperren",
+    "Cmd": "DISPLAY=:0 cinnamon-screensaver-command --deactivate"
+  },
+  "minecraft": {
+    "Icon": "minecraft.png",
+    "Text": "Minecraft",
+    "Cmd": "DISPLAY=:0 xeyes"
+  },
+  "shutdown": {
+    "Icon": "shutdown.png",
+    "Text": "Herunterfahren",
+    "Cmd": "sudo poweroff --halt"
+  }
+}
