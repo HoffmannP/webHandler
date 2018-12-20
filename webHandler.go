@@ -10,7 +10,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
+	"syscall"
 )
 
 type assets []string
@@ -45,16 +47,35 @@ func main() {
 		as = []string{"style.css", "script.js", "MSReferenceSansSerif.woff2", "MSReferenceSansSerif.woff", "MSReferenceSansSerif.tff"}
 	}
 
-	tt, err := template.New("index.go.html").ParseFiles("index.go.html")
-	if err != nil {
-		panic(err)
-	}
-	t = *tt
+	parseTemplate()
+	parseConfig()
 
 	if !strings.Contains(":", h) {
 		h = ":" + h
 	}
 
+	s := make(chan os.Signal, 1)
+	signal.Notify(s, syscall.SIGUSR2)
+	go reloadTemplate(s)
+
+	fmt.Println("listening at", h)
+	http.HandleFunc("/", serve)
+	if err := http.ListenAndServe(h, nil); err != nil {
+		panic(err)
+	}
+
+	close(s)
+}
+
+func parseTemplate() {
+	tt, err := template.New(tn).ParseFiles(tn)
+	if err != nil {
+		panic(err)
+	}
+	t = *tt
+}
+
+func parseConfig() {
 	f, err := os.Open(cf)
 	if err != nil {
 		panic(err)
@@ -62,12 +83,6 @@ func main() {
 
 	err = json.NewDecoder(f).Decode(&bs)
 	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("listening at", h)
-	http.HandleFunc("/", serve)
-	if err := http.ListenAndServe(h, nil); err != nil {
 		panic(err)
 	}
 }
@@ -114,4 +129,14 @@ func execute(w http.ResponseWriter, b button) {
 		return
 	}
 	w.Write([]byte(b.Cmd))
+}
+
+func reloadTemplate(s chan os.Signal) {
+	for sig := range s {
+		fmt.Println(sig)
+		fmt.Println("refreshing config")
+		parseConfig()
+		fmt.Println("refreshing template")
+		parseTemplate()
+	}
 }

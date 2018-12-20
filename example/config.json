@@ -4,15 +4,20 @@
     "Text": "Rechner entsperren",
     "Cmd": "DISPLAY=:0 cinnamon-screensaver-command --deactivate"
   },
+  "lock": {
+    "Icon": "icons/lock.png",
+    "Text": "Rechner sperren",
+    "Cmd": "DISPLAY=:0 cinnamon-screensaver-command --lock"
+  },
   "minecraft": {
     "Icon": "icons/minecraft.png",
     "Text": "Minecraft",
-    "Cmd": "DISPLAY=:0 xeyes"
+    "Cmd": "DISPLAY=:0 minecraft"
   },
   "shaun": {
-    "Icon": "icons/shaun.png",
+    "Icon": "icons/ShaunShaun.png",
     "Text": "Shaun Shaun",
-    "Cmd": "DISPLAY=:0 vlc --fullscreen --random \"Videos/Kinder/Shaun/*\""
+    "Cmd": "DISPLAY=:0 vlc --fullscreen --random \"/home/ber/Videos/Kinder/Shaun The Sheep/Season 0\"*/*"
   },
   "shutdown": {
     "Icon": "icons/shutdown.png",
