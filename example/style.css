@@ -2,9 +2,9 @@
   font-family: "MS Reference Sans Serif";
   font-style: normal;
   font-weight: normal;
-  src: url("MSReferenceSansSerif.woff2") format("woff2"),
-       url("MSReferenceSansSerif.woff") format("woff"),
-       url("MSReferenceSansSerif.ttf") format("truetype");
+  src: url("fonts/MSReferenceSansSerif.woff2") format("woff2"),
+       url("fonts/MSReferenceSansSerif.woff") format("woff"),
+       url("fonts/MSReferenceSansSerif.ttf") format("truetype");
 }
 
 body {
