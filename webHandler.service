@@ -1,0 +1,13 @@
+[Unit]
+Description=WebHandler allowes you to call commands via a web interface
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=$USER
+ExecStart=$DEST_DIR/$NAME --confdir $CONF_DIR
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -14,6 +15,12 @@ import (
 	"strings"
 	"syscall"
 )
+
+var cd string
+
+var authCode string
+
+const authFileName = "authcode"
 
 type assets []string
 
@@ -38,6 +45,7 @@ func (as *assets) Set(a string) error {
 }
 
 func main() {
+	flag.StringVar(&cd, "confdir", ".", "Directory for all assets, configs, etc")
 	flag.StringVar(&tn, "template", "index.go.html", "Template für die Indexdatei")
 	flag.StringVar(&h, "host", "1112", "Serveradresse in der Form [IP:]Port")
 	flag.StringVar(&cf, "config", "config.json", "Konfigurationsdatei")
@@ -47,6 +55,7 @@ func main() {
 		as = []string{"style.css", "script.js", "MSReferenceSansSerif.woff2", "MSReferenceSansSerif.woff", "MSReferenceSansSerif.tff"}
 	}
 
+	authCode = loadAuthcode()
 	parseTemplate()
 	parseConfig()
 
@@ -67,8 +76,45 @@ func main() {
 	close(s)
 }
 
+func loadAuthcode() string {
+	f, err := os.Open(cd + "/" + authFileName)
+	if err != nil {
+		return createAuthcode()
+	}
+	defer f.Close()
+	ac := make([]byte, 40)
+	if n, err := f.Read(ac); n != 40 || err != nil {
+		fmt.Println(cd+"/"+authFileName, "file invalid")
+		f.Close()
+		return createAuthcode()
+	}
+	fmt.Println("load authCode", string(ac))
+	return string(ac)
+}
+
+func createAuthcode() string {
+	ab := make([]byte, 20)
+	n, err := rand.Read(ab)
+	if n != 20 || err != nil {
+		fmt.Println("couldn't create random AuthCode")
+	}
+	ac := fmt.Sprintf("%x", ab)
+	fmt.Println("created new authCode", ac)
+	f, err := os.OpenFile(cd+"/"+authFileName, os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		fmt.Println("couldn't save", cd+"/"+authFileName)
+		return ""
+	}
+	defer f.Close()
+	if n, err := f.Write([]byte(ac)); n != 40 || err != nil {
+		fmt.Println("couldn't write to", cd+"/"+authFileName)
+		return ""
+	}
+	return ac
+}
+
 func parseTemplate() {
-	tt, err := template.New(tn).ParseFiles(tn)
+	tt, err := template.New(tn).ParseFiles(cd + "/" + tn)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +122,7 @@ func parseTemplate() {
 }
 
 func parseConfig() {
-	f, err := os.Open(cf)
+	f, err := os.Open(cd + "/" + cf)
 	if err != nil {
 		panic(err)
 	}
@@ -89,6 +135,18 @@ func parseConfig() {
 
 func serve(w http.ResponseWriter, r *http.Request) {
 	p := r.URL.Path[1:]
+
+	if c, err := r.Cookie("auth"); err != nil || c == nil || c.Value != authCode {
+		if p == authCode {
+			http.SetCookie(w, &http.Cookie{Name: "auth", Value: authCode})
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
+		}
+
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("401 - You are not allowed to access this server"))
+		return
+	}
 
 	for _, a := range as {
 		if p == a {
@@ -112,7 +170,7 @@ func serve(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveFile(w http.ResponseWriter, fn string) {
-	fh, err := os.Open(fn)
+	fh, err := os.Open(cd + "/" + fn)
 	if err != nil {
 		fmt.Println(err)
 		return
