@@ -12,9 +12,9 @@ if [ "$1" = "clean" ]
 then
     rm "${NAME}" &&\
     sudo <<EOC
-        systemctl start ${NAME} &&\
+        systemctl stop ${NAME} &&\
+        systemctl disable ${NAME} &&\
         rm \
-        "${SYSTEMD_LIB_DIR}/${NAME}.service" \
         "${SYSTEMD_CONF_DIR}/${NAME}.service" \
         "${DEST_DIR}/${NAME}" &&\
         rm -rf "${CONF_DIR}/${NAME}"
@@ -30,8 +30,7 @@ sudo -s <<EOC
         s%\$USER%'"$INST_USER"'%g
         s%\$DEST_DIR%'"$DEST_DIR"'%g
         s%\$CONF_DIR%'"$CONF_DIR/${NAME}"'%g
-        s%\$NAME%'"$NAME"'%g' "${NAME}.service" > "${SYSTEMD_LIB_DIR}/${NAME}.service" &&\
-    ln -sf "${SYSTEMD_LIB_DIR}/${NAME}.service" "${SYSTEMD_CONF_DIR}/${NAME}.service" &&\
+        s%\$NAME%'"$NAME"'%g' "${NAME}.service" > "${SYSTEMD_CONF_DIR}/${NAME}.service" &&\
     cp "${NAME}" "${DEST_DIR}/${NAME}" &&\
     mkdir -p "${CONF_DIR}/${NAME}" &&\
     cp -R example/* "${CONF_DIR}/${NAME}/"
