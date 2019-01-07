@@ -14,6 +14,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 )
 
 var cd string
@@ -138,7 +139,8 @@ func serve(w http.ResponseWriter, r *http.Request) {
 
 	if c, err := r.Cookie("auth"); err != nil || c == nil || c.Value != authCode {
 		if p == authCode {
-			http.SetCookie(w, &http.Cookie{Name: "auth", Value: authCode})
+			expiration := time.Now().Add(365 * 24 * time.Hour)
+			http.SetCookie(w, &http.Cookie{Name: "auth", Value: authCode, Expires: expiration})
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}
